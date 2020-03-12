@@ -42,7 +42,7 @@ class Renderer {
     var textProgram: ShaderProgram
     var text_u_scale: GLuint = 0
     let maxTextInstances = 65536
-    let textInstanceSize = 12 // in floats
+    let textInstanceSize = 13 // in floats
     var textInstances: [GLfloat]
     var textInstanceIx = 0
 
@@ -131,6 +131,11 @@ class Renderer {
         glEnableVertexAttribArray(5)
         glVertexAttribPointer(5, 2, GLenum(GL_FLOAT), GLboolean(GL_FALSE), textInstanceBytes, UnsafeRawPointer(bitPattern: MemoryLayout<Float>.size * 10))
         glVertexAttribDivisor(5, 1)
+        // isEmoji
+        glEnableVertexAttribArray(6)
+        glVertexAttribPointer(6, 1, GLenum(GL_FLOAT), GLboolean(GL_FALSE), textInstanceBytes, UnsafeRawPointer(bitPattern: MemoryLayout<Float>.size * 12))
+        glVertexAttribDivisor(6, 1)
+
 
         atlas = Atlas()
     }
@@ -233,6 +238,7 @@ class Renderer {
         textInstances[textInstanceIx + 9] = cachedGlyph!.uvCoords[1]
         textInstances[textInstanceIx + 10] = cachedGlyph!.uvCoords[2]
         textInstances[textInstanceIx + 11] = cachedGlyph!.uvCoords[3]
+        textInstances[textInstanceIx + 12] = glyph.isEmoji ? 1 : 0
         textInstanceIx += textInstanceSize
         if textInstanceIx == maxTextInstances * textInstanceSize {
             flushDraw()

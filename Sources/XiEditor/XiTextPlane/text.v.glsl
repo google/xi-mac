@@ -28,10 +28,14 @@ layout (location = 4) in vec2 uvOrigin;
 
 layout (location = 5) in vec2 uvSize;
 
+// 0 == false
+layout (location = 6) in float isEmoji;
+
 uniform vec2 posScale;
 
 flat out vec4 passColor;
 out vec2 uv;
+out float emoji;
 
 vec3 to_linear(vec3 srgb) {
     // 0 if srgb < 0.04045
@@ -49,4 +53,5 @@ void main() {
     passColor = rgba * vec4(1.0 / 255.0);
     passColor.rgb = to_linear(passColor.rgb);
     uv = uvOrigin + position * uvSize;
+    emoji = isEmoji;
 }

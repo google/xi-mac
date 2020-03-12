@@ -102,6 +102,9 @@ class TextLineBuilder {
                 indicesPtr = UnsafePointer<CFIndex>(indicesBuf)
             }
             let font = attributes[kCTFontAttributeName] as! CTFont
+            let traits = CTFontGetSymbolicTraits(font)
+            let isEmoji = traits.contains(.traitColorGlyphs)
+
             let fr = fontCache.getFontRef(font: font)
             for i in 0..<count {
                 let glyph = glyphsPtr![i]
@@ -121,7 +124,7 @@ class TextLineBuilder {
                 }
                 let fakeItalic = fakeItalicSpanIx < fakeItalicSpans.count && fakeItalicSpans[fakeItalicSpanIx].range.contains(ix)
                 let flags = fakeItalic ? FLAG_FAKE_ITALIC : 0
-                glyphs.append(GlyphInstance(fontRef: fr, glyph: glyph, x: GLfloat(pos.x), y: GLfloat(pos.y), fgColor: fgColor, flags: flags))
+                glyphs.append(GlyphInstance(fontRef: fr, glyph: glyph, isEmoji: isEmoji, x: GLfloat(pos.x), y: GLfloat(pos.y), fgColor: fgColor, flags: flags))
             }
         }
         var bgRange: [(BackgroundColorRange)] = []
@@ -209,6 +212,7 @@ struct TextLine {
 struct GlyphInstance {
     var fontRef: FontRef
     var glyph: CGGlyph
+    let isEmoji: Bool
     // next 2 values are in pixels
     var x: GLfloat
     var y: GLfloat

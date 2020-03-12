@@ -16,6 +16,7 @@
 
 flat in vec4 passColor;
 in vec2 uv;
+in float emoji;
 
 layout (location = 0, index = 0) out vec4 color;
 layout (location = 0, index = 1) out vec4 alphaMask;
